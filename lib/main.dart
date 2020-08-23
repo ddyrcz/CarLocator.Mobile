@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_app/car.dart';
 
 void main() => runApp(MyApp());
@@ -43,23 +44,38 @@ class _CarsState extends State<CarsList> {
   }
 
   Widget _buildCarRow(Car car, int index) {
-    return Card(
-        child: Padding(
-      padding: const EdgeInsets.all(15.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text(
-            "${car.name}",
-            style: TextStyle(fontSize: 24.0,
-            fontWeight: FontWeight.bold),
-          ),
-          SizedBox(height: 8),
-          Text(
-            "${car.registrationNumber}",
-          ),
-        ],
-      ),
-    ));
+   return  Card(
+     child: ListTile(
+       title: Text(car.name),
+       subtitle: Text(car.registrationNumber),
+       leading: Icon(Icons.directions_car),
+       onTap: _carTapped,
+     ),
+   );
+  }
+
+  void _carTapped(){
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => CarLocation()),
+    );
   }
 }
+
+class CarLocation extends StatefulWidget {
+  @override
+  _CarLocationState createState() => _CarLocationState();
+}
+
+class _CarLocationState extends State<CarLocation> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Lokalizacja GPS'),
+      ),
+      body: Container(),
+    );
+  }
+}
+
