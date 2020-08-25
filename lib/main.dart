@@ -1,4 +1,3 @@
-
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -48,17 +47,17 @@ class _CarsState extends State<CarsList> {
   }
 
   Widget _buildCarRow(Car car, int index) {
-   return  Card(
-     child: ListTile(
-       title: Text(car.name),
-       subtitle: Text(car.registrationNumber),
-       leading: Icon(Icons.directions_car),
-       onTap: _carTapped,
-     ),
-   );
+    return Card(
+      child: ListTile(
+        title: Text(car.name),
+        subtitle: Text(car.registrationNumber),
+        leading: Icon(Icons.directions_car),
+        onTap: _carTapped,
+      ),
+    );
   }
 
-  void _carTapped(){
+  void _carTapped() {
     Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => CarLocation()),
@@ -72,19 +71,28 @@ class CarLocation extends StatefulWidget {
 }
 
 class _CarLocationState extends State<CarLocation> {
+  Set<Marker> _markers = Set<Marker>();
 
   Completer<GoogleMapController> _controller = Completer();
 
   static final CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(37.42796133580664, -122.085749655962),
+    target: LatLng(50.595402, 18.967740),
     zoom: 14.4746,
   );
 
-  static final CameraPosition _kLake = CameraPosition(
-      bearing: 192.8334901395799,
-      target: LatLng(37.43296265331129, -122.08832357078792),
-      tilt: 59.440717697143555,
-      zoom: 19.151926040649414);
+  BitmapDescriptor _marketIcon;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _seMarkerIcon();
+  }
+
+  void _seMarkerIcon() async {
+    _marketIcon = await BitmapDescriptor.fromAssetImage(
+        ImageConfiguration(), "assets/car_icon.png");
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -97,21 +105,18 @@ class _CarLocationState extends State<CarLocation> {
         initialCameraPosition: _kGooglePlex,
         onMapCreated: (GoogleMapController controller) {
           _controller.complete(controller);
-        },
 
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: _goToTheLake,
-        label: Text('To the lake!'),
-        icon: Icon(Icons.directions_boat),
+          setState(() {
+            _markers.add(Marker(
+              markerId: MarkerId("0"),
+              icon: _marketIcon,
+              position: LatLng(50.595402, 18.967740),
+            ));
+          });
+
+        },
+        markers: _markers,
       ),
     );
-
-  }
-
-  Future<void> _goToTheLake() async {
-    final GoogleMapController controller = await _controller.future;
-    controller.animateCamera(CameraUpdate.newCameraPosition(_kLake));
   }
 }
-
