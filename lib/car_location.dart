@@ -11,7 +11,9 @@ class CarLocation extends StatefulWidget {
 class _CarLocationState extends State<CarLocation> {
   Set<Marker> _markers = Set<Marker>();
 
-  double initLoc = 50.595402;
+  double initLat = 50.595402;
+
+  double initLng = 18.967740;
 
   Completer<GoogleMapController> _controller = Completer();
 
@@ -28,8 +30,6 @@ class _CarLocationState extends State<CarLocation> {
   void initState() {
     super.initState();
     _seMarkerIcon();
-
-
   }
 
   void _seMarkerIcon() async {
@@ -48,18 +48,16 @@ class _CarLocationState extends State<CarLocation> {
       body: GoogleMap(
         mapType: MapType.hybrid,
         initialCameraPosition: _initialPosition,
-        onTap: (lanlng) {
 
-          initLoc =  initLoc + 0.0005;
+        onTap: (lanlng) {
+          initLat = initLat + 0.0005;
+          initLng = initLng - 0.00014;
 
           setState(() {
-
-
-
             _marker = Marker(
               markerId: MarkerId("0"),
               icon: _marketIcon,
-              position: LatLng(initLoc, 18.967740),
+              position: LatLng(initLat, initLng),
             );
           });
         },
