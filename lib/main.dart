@@ -6,6 +6,8 @@ import 'package:flutter_app/car.dart';
 
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+import 'car_location.dart';
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -65,58 +67,4 @@ class _CarsState extends State<CarsList> {
   }
 }
 
-class CarLocation extends StatefulWidget {
-  @override
-  _CarLocationState createState() => _CarLocationState();
-}
 
-class _CarLocationState extends State<CarLocation> {
-  Set<Marker> _markers = Set<Marker>();
-
-  Completer<GoogleMapController> _controller = Completer();
-
-  static final CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(50.595402, 18.967740),
-    zoom: 14.4746,
-  );
-
-  BitmapDescriptor _marketIcon;
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    _seMarkerIcon();
-  }
-
-  void _seMarkerIcon() async {
-    _marketIcon = await BitmapDescriptor.fromAssetImage(
-        ImageConfiguration(), "assets/car_icon.png");
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Lokalizacja GPS'),
-      ),
-      body: GoogleMap(
-        mapType: MapType.hybrid,
-        initialCameraPosition: _kGooglePlex,
-        onMapCreated: (GoogleMapController controller) {
-          _controller.complete(controller);
-
-          setState(() {
-            _markers.add(Marker(
-              markerId: MarkerId("0"),
-              icon: _marketIcon,
-              position: LatLng(50.595402, 18.967740),
-            ));
-          });
-
-        },
-        markers: _markers,
-      ),
-    );
-  }
-}
