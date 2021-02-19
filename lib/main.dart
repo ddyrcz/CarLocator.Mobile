@@ -33,7 +33,7 @@ class _CarsState extends State<CarsList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Samochody'),
+        title: Text('Pojazdy'),
       ),
       body: _buildCarsList(),
     );

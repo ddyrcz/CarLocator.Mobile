@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -9,35 +8,39 @@ class CarLocation extends StatefulWidget {
 }
 
 class _CarLocationState extends State<CarLocation> {
-  Set<Marker> _markers = Set<Marker>();
 
   double initLat = 50.595402;
-
   double initLng = 18.967740;
 
-  Completer<GoogleMapController> _controller = Completer();
+  GoogleMapController _controller;
+  Marker _marker;
 
   static final CameraPosition _initialPosition = CameraPosition(
     target: LatLng(50.595402, 18.967740),
     zoom: 14.4746,
   );
 
-  BitmapDescriptor _marketIcon;
-
-  Marker _marker;
-
   @override
   void initState() {
     super.initState();
-    _seMarkerIcon();
+    const oneSec = const Duration(seconds:1);
+    Timer.periodic(oneSec, (Timer t) => updateCarLocation());
   }
 
-  void _seMarkerIcon() async {
-    _marketIcon = await BitmapDescriptor.fromAssetImage(
-        ImageConfiguration(), "assets/car_icon.png");
-  }
+  void updateCarLocation(){
+    initLat = initLat - 0.0005;
+    initLng = initLng - 0.00014;
 
-  void _updateCarLocation() {}
+    setState(() {
+      _marker = Marker(
+        markerId: MarkerId("0"),
+        //icon: _marketIcon,
+        position: LatLng(initLat, initLng),
+      );
+
+      _controller.animateCamera(CameraUpdate.newLatLng(LatLng(initLat, initLng)));
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,23 +49,10 @@ class _CarLocationState extends State<CarLocation> {
         title: Text('Lokalizacja GPS'),
       ),
       body: GoogleMap(
-        mapType: MapType.hybrid,
         initialCameraPosition: _initialPosition,
-
-        onTap: (lanlng) {
-          initLat = initLat + 0.0005;
-          initLng = initLng - 0.00014;
-
-          setState(() {
-            _marker = Marker(
-              markerId: MarkerId("0"),
-              icon: _marketIcon,
-              position: LatLng(initLat, initLng),
-            );
-          });
-        },
+        mapType: MapType.normal,
         onMapCreated: (GoogleMapController controller) {
-          _controller.complete(controller);
+          _controller = controller;
         },
         markers: Set.of((_marker != null) ? [_marker] : []),
       ),
