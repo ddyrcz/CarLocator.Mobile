@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class CarLocation extends StatefulWidget {
   @override
@@ -24,12 +26,25 @@ class _CarLocationState extends State<CarLocation> {
   void initState() {
     super.initState();
     const oneSec = const Duration(seconds:1);
-    Timer.periodic(oneSec, (Timer t) => updateCarLocation());
+    Timer.periodic(oneSec, (Timer t)  =>  updateCarLocation());
   }
 
-  void updateCarLocation(){
-    initLat = initLat - 0.0005;
-    initLng = initLng - 0.00014;
+  void updateCarLocation() async{
+
+
+    var url = 'https://example.com/whatsit/create';
+    var response = await http.get("https://vehiclelocatorapi.azurewebsites.net/api/vehicles/38e599d7-067e-45f1-b1bb-da3ee309f169");
+    print('Response status: ${response.statusCode}');
+    print('Response body: ${response.body}');
+
+    var map = jsonDecode(response.body);
+
+    initLat = map["mostRecentLocation"]["lat"];
+    initLng = map["mostRecentLocation"]["lon"];
+
+    print(initLat);
+    print(initLng);
+
 
     setState(() {
       _marker = Marker(
