@@ -5,11 +5,20 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class CarLocation extends StatefulWidget {
+
+  final String id;
+
+  CarLocation({this.id});
+
   @override
-  _CarLocationState createState() => _CarLocationState();
+  _CarLocationState createState() => _CarLocationState(id: id);
 }
 
 class _CarLocationState extends State<CarLocation> {
+
+  final String id;
+
+  _CarLocationState({this.id});
 
   double initLat = 50.595402;
   double initLng = 18.967740;
@@ -30,10 +39,7 @@ class _CarLocationState extends State<CarLocation> {
   }
 
   void updateCarLocation() async{
-
-
-    var url = 'https://example.com/whatsit/create';
-    var response = await http.get("https://vehiclelocatorapi.azurewebsites.net/api/vehicles/38e599d7-067e-45f1-b1bb-da3ee309f169");
+    var response = await http.get("https://vehiclelocatorapi.azurewebsites.net/api/vehicles/" + this.id);
     print('Response status: ${response.statusCode}');
     print('Response body: ${response.body}');
 

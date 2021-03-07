@@ -39,7 +39,6 @@ class _CarsState extends State<CarsList> {
 
   void getCars()async {
     var response =  await http.get("https://vehiclelocatorapi.azurewebsites.net/api/vehicles");
-
     var vehiclesJson = jsonDecode(response.body);
     List<Car> vehicles = vehiclesJson.map<Car>((tagJson) => Car.fromJson(tagJson)).toList();
 
@@ -73,15 +72,15 @@ class _CarsState extends State<CarsList> {
         title: Text(car.id),
         subtitle: Text(car.name),
         leading: Icon(Icons.directions_car),
-        onTap: _carTapped,
+        onTap: () =>  _carTapped(car.id),
       ),
     );
   }
 
-  void _carTapped() {
+  void _carTapped(String id) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => CarLocation()),
+      MaterialPageRoute(builder: (context) => CarLocation(id: id)),
     );
   }
 }
